@@ -41,6 +41,8 @@ export class Multiselect {
     this.useCopyPasteMenu_ = true;
     this.multiFieldUpdate_ = true;
     this.multiSelectKeys_ = ['shift'];
+    this.keyboardNavKeys = ['ctrl', 'shift', 'k'];
+    this.registered = true;
   }
 
   /**
@@ -92,7 +94,7 @@ export class Multiselect {
       ContextMenu.unregisterContextMenu();
       ContextMenu.registerOurContextMenu(this.useCopyPasteMenu_,
           this.useCopyPasteCrossTab_);
-      Shortcut.unregisterShortcut();
+      Shortcut.unregisterOrigShortcut();
       Shortcut.registerOurShortcut(this.useCopyPasteCrossTab_);
     }
 
@@ -118,6 +120,10 @@ export class Multiselect {
       this.origBumpNeighbours = Blockly.BlockSvg.prototype.bumpNeighbours;
       Blockly.BlockSvg.prototype.bumpNeighbours = function() {};
     }
+
+    Blockly.browserEvents.conditionalBind(
+        injectionDiv, 'keydown', this, this.unbindMultiselectCopyPaste_
+    );
   }
 
   /**
@@ -190,7 +196,7 @@ export class Multiselect {
       Blockly.ContextMenuRegistry.registry.unregister('copy_to_backpack');
       ContextMenu.registerOrigContextMenu();
 
-      Shortcut.unregisterShortcut();
+      Shortcut.unregisterOrigShortcut();
       Blockly.ShortcutRegistry.registry.unregister('selectall');
       Shortcut.registerOrigShortcut();
     }
@@ -370,6 +376,19 @@ export class Multiselect {
     if (this.multiSelectKeys_.indexOf(e.key.toLocaleLowerCase()) > -1 &&
         !inMultipleSelectionModeWeakMap.get(this.workspace_)) {
       this.controls_.enableMultiselect();
+    }
+  }
+
+  unbindMultiselectCopyPaste_(e) {
+    if (this.keyboardNavKeys.indexOf(e.key.toLocaleLowerCase() > -1) &&
+        this.workspace_.keyboardAccessibilityMode && this.registered) {
+      Shortcut.unregisterOurShortcut();
+      // Shortcut.registerOrigShortcut();
+      this.registered = false;
+    } else if (!this.workspace_.keyboardAccessibilityMode && !this.registered) {
+      // Shortcut.unregisterOrigShortcut();
+      Shortcut.registerOurShortcut();
+      this.registered = true;
     }
   }
 
