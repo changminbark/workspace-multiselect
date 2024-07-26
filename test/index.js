@@ -28,14 +28,12 @@ function createWorkspace(blocklyDiv, options) {
   backpack.init();
 
   // NAVIGATION PLUGIN (DONE) ============================================================
-  //   // Initialize plugin.
-  //   const navigationController = new NavigationController();
-  //   navigationController.init();
-  //   navigationController.addWorkspace(workspace);
-  // // Turns on keyboard navigation.
-  //   navigationController.enable(workspace);
-
-
+  // Initialize plugin.
+    const navigationController = new NavigationController();
+    navigationController.init();
+    navigationController.addWorkspace(workspace);
+  // Turns on keyboard navigation.
+    navigationController.enable(workspace);
 
   const multiselectPlugin = new Multiselect(workspace);
   multiselectPlugin.init(options);
