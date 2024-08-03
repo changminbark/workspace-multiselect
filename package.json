@@ -39,7 +39,10 @@
     "src"
   ],
   "dependencies": {
+    "@blockly/disable-top-blocks": "^0.5.6",
     "@blockly/keyboard-navigation": "^0.6.4",
+    "@blockly/shadow-block-converter": "^6.0.5",
+    "@blockly/workspace-content-highlight": "^5.0.5",
     "dragselect": "^2.7.4"
   },
   "devDependencies": {

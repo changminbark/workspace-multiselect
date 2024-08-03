@@ -13,6 +13,9 @@ import {toolboxCategories, createPlayground} from '@blockly/dev-tools';
 import {Multiselect} from '../src/index';
 import {Backpack} from '@blockly/workspace-backpack';
 import {NavigationController} from '@blockly/keyboard-navigation';
+import {shadowBlockConversionChangeListener} from '@blockly/shadow-block-converter';
+import {ContentHighlight} from "@blockly/workspace-content-highlight";
+import {DisableTopBlocks} from "@blockly/disable-top-blocks";
 
 /**
  * Create a workspace.
@@ -27,19 +30,29 @@ function createWorkspace(blocklyDiv, options) {
   const backpack = new Backpack(workspace);
   backpack.init();
 
-  // NAVIGATION PLUGIN (DONE) ============================================================
-  // Initialize plugin.
-    const navigationController = new NavigationController();
-    navigationController.init();
-    navigationController.addWorkspace(workspace);
-  // Turns on keyboard navigation.
-    navigationController.enable(workspace);
+  // // KEYBOARD NAVIGATION PLUGIN (DONE) ============================================================
+  // // Initialize plugin.
+  //   const navigationController = new NavigationController();
+  //   navigationController.init();
+  //   navigationController.addWorkspace(workspace);
+  // // Turns on keyboard navigation.
+  //   navigationController.enable(workspace);
 
-  const multiselectPlugin = new Multiselect(workspace);
-  multiselectPlugin.init(options);
+  // // SHADOW BLOCK CONVERTER PLUGIN (DONE) =========================================================
+  workspace.addChangeListener(shadowBlockConversionChangeListener);
 
+  // // CONTENT HIGHLIGHT PLUGIN (DONE) ==============================================================
+  // // Initialize plugin.
+  // const contentHighlight = new ContentHighlight(workspace);
+  // contentHighlight.init();
 
+  // // DISABLE TOP BLOCKS PLUGIN (DONE) ==============================================================
+  // // The plugin must be initialized before it has any effect.
+  // const disableTopBlocksPlugin = new DisableTopBlocks();
+  // disableTopBlocksPlugin.init();
 
+  // const multiselectPlugin = new Multiselect(workspace);
+  // multiselectPlugin.init(options);
   return workspace;
 }
 
