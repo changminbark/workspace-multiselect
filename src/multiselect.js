@@ -360,6 +360,7 @@ export class Multiselect {
   eventListenerAll_(e) {
     // on Block Selected (must listen events of all workspaces
     // to cover all possible selection changes)
+    console.log(e)
     if (e.type === Blockly.Events.SELECTED) {
       multiselectControlsList.forEach((controls) => {
         controls.updateMultiselect();

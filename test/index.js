@@ -16,6 +16,8 @@ import {NavigationController} from '@blockly/keyboard-navigation';
 import {shadowBlockConversionChangeListener} from '@blockly/shadow-block-converter';
 import {ContentHighlight} from "@blockly/workspace-content-highlight";
 import {DisableTopBlocks} from "@blockly/disable-top-blocks";
+import {pluginInfo as StrictConnectionsPluginInfo} from '@blockly/plugin-strict-connection-checker';
+import * as BlockDynamicConnection from "@blockly/block-dynamic-connection";
 
 /**
  * Create a workspace.
@@ -39,7 +41,7 @@ function createWorkspace(blocklyDiv, options) {
   //   navigationController.enable(workspace);
 
   // // SHADOW BLOCK CONVERTER PLUGIN (DONE) =========================================================
-  workspace.addChangeListener(shadowBlockConversionChangeListener);
+  // workspace.addChangeListener(shadowBlockConversionChangeListener);
 
   // // CONTENT HIGHLIGHT PLUGIN (DONE) ==============================================================
   // // Initialize plugin.
@@ -51,14 +53,86 @@ function createWorkspace(blocklyDiv, options) {
   // const disableTopBlocksPlugin = new DisableTopBlocks();
   // disableTopBlocksPlugin.init();
 
-  // const multiselectPlugin = new Multiselect(workspace);
-  // multiselectPlugin.init(options);
+  // // STRICT CONNECTION CHECKER PLUGIN (DONE) =======================================================
+
+  // BLOCK DYNAMIC CONNECTION PLUGIN (DONE) ===========================================================
+  // Add the change listener so connections will be finalized on deletion.
+  workspace.addChangeListener(BlockDynamicConnection.finalizeConnections);
+
+  const multiselectPlugin = new Multiselect(workspace);
+  multiselectPlugin.init(options);
+
+
   return workspace;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  BlockDynamicConnection.overrideOldBlockDefinitions();
+
+  const toolbox = {
+    kind: 'flyoutToolbox',
+    contents: [
+      {
+        kind: 'block',
+        type: 'text_join',
+      },
+      {
+        kind: 'block',
+        type: 'lists_create_with',
+      },
+      {
+        kind: 'block',
+        type: 'controls_if',
+      },
+      {
+        kind: 'block',
+        type: 'logic_boolean',
+        fields: {
+          BOOL: 'TRUE',
+        },
+      },
+      {
+        kind: 'block',
+        type: 'text',
+        fields: {
+          TEXT: 'abc',
+        },
+      },
+      {
+        kind: 'block',
+        type: 'math_number',
+        fields: {
+          NUM: '123',
+        },
+      },
+      {
+        kind: 'block',
+        type: 'text_print',
+        inputs: {
+          TEXT: {
+            shadow: {
+              type: 'text',
+              fields: {
+                TEXT: 'abc',
+              },
+            },
+            block: undefined,
+          },
+        },
+      },
+    ],
+  };
   const defaultOptions = {
-    toolbox: toolboxCategories,
+    toolbox: toolbox,
+    plugins: {
+      // ...StrictConnectionsPluginInfo,
+      connectionPreviewer:
+          BlockDynamicConnection.decoratePreviewer(
+              // Replace with a custom connection previewer, or remove to decorate
+              // the default one.
+              Blockly.InsertionMarkerPreviewer,
+          ),
+    },
     useDoubleClick: true,
     bumpNeighbours: false,
     multiFieldUpdate: true,
@@ -86,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
       wheel: true,
     },
   };
+
   createPlayground(document.getElementById('root'), createWorkspace,
       defaultOptions);
 });

@@ -39,8 +39,10 @@
     "src"
   ],
   "dependencies": {
+    "@blockly/block-dynamic-connection": "^0.7.6",
     "@blockly/disable-top-blocks": "^0.5.6",
     "@blockly/keyboard-navigation": "^0.6.4",
+    "@blockly/plugin-strict-connection-checker": "^5.0.6",
     "@blockly/shadow-block-converter": "^6.0.5",
     "@blockly/workspace-content-highlight": "^5.0.5",
     "dragselect": "^2.7.4"
