@@ -39,6 +39,7 @@ export class MultiselectDraggable {
   clearAll_() {
     for (const [subDraggable] of this.subDraggables) {
       this.removeSubDraggable_(subDraggable);
+      subDraggable.unselect();
     }
   }
 
